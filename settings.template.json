@@ -21,14 +21,19 @@
     ],
     "layout": {
       "left": [
+        "path",
+        "git",
         "model",
         "thinking",
         "shell_mode",
-        "path",
-        "git",
-        "queue",
         "custom:context-bar",
-        "cost"
+        "cost",
+        "custom:ds-balance"
+      ],
+      "right": [
+        "custom:cache-hit",
+        "custom:tps",
+        "queue"
       ]
     },
     "customItems": [
