@@ -1,4 +1,4 @@
-# Pi 团队环境配置清单
+# Pi 配置清单（给 AI 执行）
 
 > 本文件的**执行者是一台机器上的 AI 助手**，不是人。人类请回 [README.md](README.md)。
 
@@ -51,7 +51,7 @@ pi --version
 
 ---
 
-## 2. 安装团队扩展包
+## 2. 安装扩展包
 
 ```bash
 pi install git:github.com/jiangnanquan/pi-team-setup@main
@@ -67,7 +67,7 @@ pi list                     # 应出现 pi-team-setup
 
 ---
 
-## 3. 安装团队插件（9 个，版本已锁定）
+## 3. 安装插件（9 个，版本已锁定）
 
 逐条执行，**不要省略版本号**（省略会被 `pi update --extensions` 升到新版，导致各人环境不一致）：
 
@@ -93,7 +93,7 @@ pi list
 
 ---
 
-## 4. 合并团队标准配置
+## 4. 合并标准配置
 
 ### 4.1 合并规则（务必按此执行）
 
@@ -110,7 +110,7 @@ pi list
 
 | 键 | 用途 |
 |----|------|
-| `modelThinkingLevels` | 团队统一思考等级（`deepseek-flash` → `max`） |
+| `modelThinkingLevels` | 统一思考等级（`deepseek-flash` → `max`） |
 | `markdown.mermaid` | Mermaid 图流式渲染 |
 | `enableSkillCommands` | 启用 `/skill:xxx` 命令 |
 | `showHardwareCursor` | 中文输入法光标可见（**中文环境必需**） |
@@ -123,7 +123,7 @@ pi list
 
 ---
 
-## 5. 写入团队通用提示追加
+## 5. 写入通用提示追加
 
 把本仓库的 `APPEND_SYSTEM.md` 复制到 `~/.pi/agent/APPEND_SYSTEM.md`。
 
@@ -143,7 +143,7 @@ pi list
 1. **登录模型**：在 Pi 里执行 `/login` → 选 DeepSeek → 粘贴**自己的** API key。凭据落在本机 `~/.pi/agent/auth.json`，不要帮用户填报、不要读取该文件、不要试图用他人 key 代替。
 2. **终端字体**：状态栏含 `⚡`/`¥`/进度条等字符，Windows Terminal 需装 Nerd Font 并设置为终端字体，否则显示豆腐块。
 
-**可选**：团队若统一关闭 DeepSeek 的会话亲和头，创建 `~/.pi/agent/models.json`：
+**可选**：若要关闭 DeepSeek 的会话亲和头，创建 `~/.pi/agent/models.json`：
 
 ```json
 {
