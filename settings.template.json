@@ -1,0 +1,62 @@
+{
+  "modelThinkingLevels": {
+    "deepseek/deepseek-flash": "max",
+    "deepseek/deepseek-v4-flash-vision-exp": "max"
+  },
+  "markdown": {
+    "mermaid": "streaming"
+  },
+  "enableSkillCommands": true,
+  "showHardwareCursor": true,
+  "collapseChangelog": true,
+  "quietStartup": true,
+  "powerline": {
+    "placement": "below",
+    "cost": {
+      "currency": "CNY"
+    },
+    "disabledSegments": [
+      "context_pct",
+      "cache_read"
+    ],
+    "layout": {
+      "left": [
+        "model",
+        "thinking",
+        "shell_mode",
+        "path",
+        "git",
+        "queue",
+        "custom:context-bar",
+        "cost"
+      ]
+    },
+    "customItems": [
+      {
+        "id": "context-bar",
+        "statusKey": "context-bar",
+        "position": "left",
+        "selfColorize": true
+      },
+      {
+        "id": "tps",
+        "statusKey": "tps",
+        "position": "right",
+        "prefix": "⚡",
+        "color": "accent"
+      },
+      {
+        "id": "cache-hit",
+        "statusKey": "cache-hit",
+        "position": "right",
+        "selfColorize": true
+      },
+      {
+        "id": "ds-balance",
+        "statusKey": "ds-balance",
+        "position": "right",
+        "selfColorize": true
+      }
+    ]
+  }
+}

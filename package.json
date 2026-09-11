@@ -1,0 +1,9 @@
+{
+  "name": "pi-team-setup",
+  "version": "1.0.0",
+  "private": true,
+  "description": "团队 Pi 环境引导包：状态栏扩展（context-bar / cache-hit / ds-balance / tps-status）与团队标准配置",
+  "pi": {
+    "extensions": ["./extensions"]
+  }
+}
