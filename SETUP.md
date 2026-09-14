@@ -15,7 +15,7 @@
    - 与用户已有值冲突的键，逐条列出交用户决定，**不要静默覆盖**；
    - 不读、不写、不打印 `auth.json`（内含 API 凭据）。
 4. **平台适配。** 文中 `~` 在 Windows 上指 `%USERPROFILE%`，路径分隔符按当前平台处理。命令若在 Windows 下不可用，优先用 Git Bash（Pi 在 Windows 默认走 `C:\Program Files\Git\bin\bash.exe`）。
-5. **不越界。** 不安装本清单未列出的软件，不改系统 PATH，不动其他仓库，不执行任何数据库变更。
+5. **不越界。** 不安装本清单未列出的软件，不改系统 PATH，不动其他仓库（第 6 步列出的 pi-zh 除外），不执行任何数据库变更。
 
 ---
 
@@ -136,7 +136,59 @@ pi list
 
 ---
 
-## 6. 必须由用户亲自完成的（AI 不能代劳）
+## 6. 安装中文界面汉化（pi-zh）
+
+把 [pi-zh](https://github.com/jiangnanquan/pi-zh) 拉到本机，执行三条互相独立的汉化线。
+
+**本步是增强项，允许跳过。** 前置不满足或版本不匹配时，跳过并报告，**不要 `--force` / `--allow-missing` 硬闯**，不影响第 7、8 步。
+
+**前置检查**：`python3 --version` 能正常输出（A 线、C 线的引擎依赖）。缺失则跳过本步，并告知用户「汉化需要 Python 3（Windows 上只有 `python` 而没有 `python3` 时同样先跳过），其余配置不受影响」。
+
+```bash
+# 6.1 克隆汉化仓
+git clone https://github.com/jiangnanquan/pi-zh ~/pi-zh
+cd ~/pi-zh
+
+# 6.2 A 线：CLI / TUI 汉化（命令名保持英文；写盘前自动留存 .zh-backup 干净基底）
+bash scripts/apply_patch.sh
+
+# 6.3 B 线：第三方插件简介汉化（运行时覆盖，不改任何插件源码）
+bash scripts/install_plugin_i18n.sh
+
+# 6.4 C 线：插件渲染文案汉化（欢迎页等）
+bash scripts/apply_plugin_ui.sh
+```
+
+三条线各自独立，均可单独还原：
+
+```bash
+bash scripts/apply_patch.sh --restore           # A 线：还原官方英文
+bash scripts/install_plugin_i18n.sh --uninstall # B 线：移除软链，插件简介恢复英文
+bash scripts/apply_plugin_ui.sh --restore       # C 线：还原插件英文
+```
+
+**验证**：
+
+```bash
+pi --help
+```
+
+说明文字应为简体中文，而 `--help`、`--version` 等参数与所有命令名保持英文。
+
+**失败处理**（按此降级，不要自作主张）：
+
+| 现象 | 处置 |
+|------|------|
+| A 线报「当前版本 vX.Y.Z 不在已知适配清单」 | Pi 版本超前于汉化适配，属预期情形。**跳过 A 线**，继续 B / C 线，最终报告写明「CLI 汉化待上游适配（本机 vX.Y.Z）」 |
+| A 线报 `python3` 缺失 | 跳过整步（见前置检查） |
+| B 线报「链接已存在且不是本项目软链」 | 用户 `~/.pi/agent` 下已有同名文件或软链。**停下报告**，由用户决定是否加 `--force`，不要代拍板 |
+| C 线严格模式报「未命中 / 拒绝写盘」或找不到插件包 | 字典适配版本与本机插件版本不一致，或第 3 步未装齐。**跳过 C 线**并报告 |
+
+**范围边界**：只执行上面 4 条命令。不修改 `~/pi-zh` 里的 `i18n/*.json` 与 `scripts/*`；发现翻译问题，让用户到上游仓库反馈。
+
+---
+
+## 7. 必须由用户亲自完成的（AI 不能代劳）
 
 停下并明确告知用户以下两件事：
 
@@ -161,19 +213,20 @@ pi list
 
 ---
 
-## 7. 最终验收
+## 8. 最终验收
 
 逐项执行，全部通过才算完成：
 
 | # | 验收项 | 命令 / 观察 | 期望 |
 |---|--------|------------|------|
-| 7.1 | Pi 可用 | `pi --version` | 有版本号 |
-| 7.2 | 包全部就位 | `pi list` | 10 条（1 个 git 包 + 9 个 npm 包） |
-| 7.3 | 扩展已加载 | `pi config` 或启动 Pi 查看扩展列表 | 4 个扩展 `context-bar` / `cache-hit` / `ds-balance` / `tps-status` 均为启用状态 |
-| 7.4 | 状态栏段位 | 启动 `pi`，观察底部 | 出现进度条 `[====------] x%`、`¥余额`、`CH x%`、`⚡x tok/s` |
-| 7.5 | 中文偏好生效 | 在 Pi 里提问 | 输出为简体中文 |
+| 8.1 | Pi 可用 | `pi --version` | 有版本号 |
+| 8.2 | 包全部就位 | `pi list` | 10 条（1 个 git 包 + 9 个 npm 包） |
+| 8.3 | 扩展已加载 | `pi config` 或启动 Pi 查看扩展列表 | 4 个扩展 `context-bar` / `cache-hit` / `ds-balance` / `tps-status` 均为启用状态 |
+| 8.4 | 状态栏段位 | 启动 `pi`，观察底部 | 出现进度条 `[====------] x%`、`¥余额`、`CH x%`、`⚡x tok/s` |
+| 8.5 | 中文偏好生效 | 在 Pi 里提问 | 输出为简体中文 |
+| 8.6 | 界面汉化 | `pi --help` | 说明文字为简体中文、命令名与参数仍为英文。第 6 步按其降级规则跳过的，此项记为「未生效（待上游适配）」写入报告，不算安装失败 |
 
-**7.4 失败时的排查顺序**：
+**8.4 失败时的排查顺序**：
 1. `pi-powerline-footer` 是否装上（第 3 步第一条）；
 2. `settings.json` 里 `powerline.customItems` 是否完整（第 4 步）；
 3. 终端是否为 Windows Terminal / 支持真彩色的终端。
@@ -186,3 +239,5 @@ pi list
 - 不安装/卸载本清单以外的 Pi 插件
 - 不复制 `~/.pi/agent/npm/node_modules`（含平台原生二进制，跨机器复制必然损坏，让 Pi 自己装）
 - 不动 `sessions/`、`trust.json`、`auth.json`
+- 不执行 pi-zh 的懒人包安装（`bash scripts/install_bundle.sh`）：它是维护者本机环境的另一种分发渠道，与本清单第 2、3 步的扩展与插件高度重叠，重复执行会互相覆盖 `powerline` 配置
+- 不改 pi-zh 的翻译字典与脚本（`i18n/*.json`、`scripts/*`）；翻译或补丁问题让用户到上游仓库反馈
